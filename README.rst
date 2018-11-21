@@ -21,6 +21,7 @@ To build usb4704 plugin run the commands:
   $ cmake ..
   $ make
 
+- BIODAQDIR should be pointed at the directory that has the libs and include subdirectoy from the USB-4704 SDK_driver downloaded from the Advantech support website. http://downloadt.advantech.com/download/downloadsr.aspx?File_Id=1-1N61WCN
 - By default the FogLAMP develop package header files and libraries
   are expected to be located in /usr/include/foglamp and /usr/lib/foglamp
 - If **FOGLAMP_ROOT** env var is set and no -D options are set,
