@@ -5,7 +5,7 @@ Advantech USB-4704 Portable Data Acquisition Module C/C++ South plugin
 NOTE:
 
 This plugin requries the Advantech BIODAQ library. This has not standard install
-location, therefore you must se the environment variable BIODAQDIR to the location
+location, therefore you must set the environment variable BIODAQDIR to the location
 in whch you installed this.
 
 Build
@@ -85,12 +85,10 @@ Run the make_deb command after compiling the plugin:
 .. code-block:: console
 
   $ ./make_deb help
-  make_deb {x86|arm} [help|clean|cleanall]
+  make_deb [help|clean|cleanall]
   This script is used to create the Debian package of FoglAMP C++ 'usb4704' south plugin
   Arguments:
    help     - Display this help text
-   x86      - Build an x86_64 package
-   arm      - Build an armv7l package
    clean    - Remove all the old versions saved in format .XXXX
    cleanall - Remove all the versions, including the last one
   $
