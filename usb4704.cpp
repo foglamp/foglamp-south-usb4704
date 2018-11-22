@@ -42,6 +42,15 @@ USB4704::~USB4704()
 }
 
 /**
+ * Clear the connection list ahead of reconfiguring the plugin.
+ */
+void USB4704::clearConnections()
+{
+	m_analogue.clear();
+	m_digital.clear();
+}
+
+/**
  * Add a new analogue pin to be monitored by the plugin
  *
  * @param name	The name of the datapoint that will be added for this analogue channel
