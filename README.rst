@@ -4,8 +4,8 @@ Advantech USB-4704 Portable Data Acquisition Module C/C++ South plugin
 
 NOTE:
 
-This plugin requries the Advantech BIODAQ library. This has not standard install
-location, therefore you must se the environment variable BIODAQDIR to the location
+This plugin requires the Advantech BIODAQ library. This has no standard install
+location, therefore you must set the environment variable BIODAQDIR to the location
 in whch you installed this.
 
 Build
