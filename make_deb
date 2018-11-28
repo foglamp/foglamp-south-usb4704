@@ -99,13 +99,44 @@ if [ ! -L "${BUILD_ROOT}" -a ! -d "${BUILD_ROOT}" ]; then
     mkdir -p "${BUILD_ROOT}"
 fi
 
-# Checl plugin has been built
-if [ ! -d "${GIT_ROOT}/build" ]; then
-    echo "Error: ./build directory not found."
-    echo "Build plugin ${plugin_name} first."
-    echo "mkdir ./build; cd ./build; cmake ..; make; cd .."
+# Check if the default directory exists
+if [[ ! -d "${FOGLAMP_ROOT}" ]]; then
+    logger -p local0.err -t "foglamp.script.foglamp" "FogLAMP cannot be executed: ${FOGLAMP_ROOT} is not a valid directory."
+    echo "FogLAMP cannot be executed: ${FOGLAMP_ROOT} is not a valid directory."
+    echo "Create the enviroment variable FOGLAMP_ROOT before using FogLAMP."
+    echo "Specify the base directory for FogLAMP and set the variable with:"
+    echo "export FOGLAMP_ROOT=<basedir>"
     exit 1
 fi
+
+# Check/set LD_LIBRARY_PATH
+libPathSet=0
+libdir=${FOGLAMP_ROOT}/lib; [ -d ${libdir} ] && LD_LIBRARY_PATH=$(echo $LD_LIBRARY_PATH | sed "s|${libdir}||g") && export LD_LIBRARY_PATH=${libdir}:${LD_LIBRARY_PATH} && libPathSet=1
+libdir=${FOGLAMP_ROOT}/cmake_build/C/lib; [ -d ${libdir} ] && LD_LIBRARY_PATH=$(echo $LD_LIBRARY_PATH | sed "s|${libdir}||g") && export LD_LIBRARY_PATH=${libdir}:${LD_LIBRARY_PATH} && libPathSet=1
+[ "$libPathSet" -eq "0" ] && echo "Unable to set/update LD_LIBRARY_PATH to include path of Foglamp shared libraries: check whether ${FOGLAMP_ROOT}/lib or ${FOGLAMP_ROOT}/cmake_build/C/lib exists" && exit 1
+
+if [ "$(dpkg -s libmodbus-dev | grep Status)" == "Status: install ok installed" ]; then 
+  echo "libmodbus-dev library is installed"
+else 
+  echo "libmodbus-dev library is not present on the machine, please install before building the package"
+  echo "sudo apt-get install libmodbus-dev" 
+  exit 1
+fi
+
+#
+# Building Advantech usb4704
+#cd /tmp; wget http://advdownload.advantech.com/productfile/Downloadfile1/1-1N61WCN/linux_driver_source_4.0.0.0_64bit.run.zip; unzip linux_driver_source_4.0.0.0_64bit.run.zip;
+#sudo chmod +x linux_driver_source_4.0.0.0_64bit.run; sudo ./linux_driver_source_4.0.0.0_64bit.run silent install usb4702_usb4704; export BIODAQDIR=/opt/advantech/
+
+# Build plugin
+if [[ ! -d "${BIODAQDIR}" ]]; then
+    echo "Build cannot be executed: {BIODAQDIR} is not a valid directory."
+    echo "Create the enviroment variable BIODAQDIR before building plugin."
+    echo "Specify the base directory for BIODAQDIR and set the variable with:"
+    echo "export BIODAQDIR=<basedir>"
+    exit 1
+fi
+rm -rf build; mkdir ./build; cd ./build; cmake ..; make; cd ..
 
 cd "${BUILD_ROOT}"
 existing_pkgs=`find . -maxdepth 1 -name "${package_name}.????" | wc -l`
