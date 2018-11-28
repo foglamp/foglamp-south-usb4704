@@ -174,6 +174,63 @@ USB4704 *usb = (USB4704 *)handle;
  */
 void plugin_reconfigure(PLUGIN_HANDLE *handle, string& newConfig)
 {
+ConfigCategory	config("update", newConfig);
+USB4704		*usb = (USB4704 *)handle;
+
+	if (config.itemExists("asset"))
+	{
+		usb->setAssetName(config.getValue("asset"));
+	}
+	if (config.itemExists("connections"))
+	{
+		string connections = config.getValue("connections");
+		rapidjson::Document doc;
+		doc.Parse(connections.c_str());
+		if (!doc.HasParseError())
+		{
+			usb->clearConnections();
+			for (rapidjson::Value::ConstMemberIterator itr = doc.MemberBegin();
+							itr != doc.MemberEnd(); ++itr)
+			{
+				const char *type = itr->value["type"].GetString();
+				if (strcmp(type, "analogue") == 0)
+				{
+					double scale = 1.0;
+					if (itr->value.HasMember("scale"))
+					{
+						scale = itr->value["scale"].GetFloat();
+					}
+					if (itr->value.HasMember("pin") && itr->value["pin"].IsString())
+					{
+						usb->addAnalogueConnection(itr->name.GetString(), itr->value["pin"].GetString(),
+								scale);
+					}
+					else
+					{
+						Logger::getLogger()->error("Analogue connection for USB-4704 is missing definition of pin");
+						throw exception();
+					}
+				}
+				else if (strcmp(type, "digital") == 0)
+				{
+					if (itr->value.HasMember("pins") && itr->value["pins"].IsArray())
+					{
+						vector<string> pins;
+						for (Value::ConstValueIterator pitr = itr->value.Begin();
+									pitr != itr->value.End(); ++pitr)
+						{
+							pins.push_back(string(pitr->GetString()));
+						}
+						usb->addDigitalConnection(itr->name.GetString(), pins);
+					}
+				}
+				else
+				{
+					throw exception();
+				}
+			}
+		}
+	}
 }
 
 /**
