@@ -4,8 +4,8 @@ Advantech USB-4704 Portable Data Acquisition Module C/C++ South plugin
 
 NOTE:
 
-This plugin requries the Advantech BIODAQ library. This has not standard install
-location, therefore you must se the environment variable BIODAQDIR to the location
+This plugin requires the Advantech BIODAQ library. This has no standard install
+location, therefore you must set the environment variable BIODAQDIR to the location
 in whch you installed this.
 
 Build
@@ -21,6 +21,12 @@ To build usb4704 plugin run the commands:
   $ cmake ..
   $ make
 
+- The environment variable BIODAQDIR should be pointed at the directory
+  that has the libs and include subdirectoy from the USB-4704 SDK_driver
+  downloaded from the Advantech support website.
+  http://downloadt.advantech.com/download/downloadsr.aspx?File_Id=1-1N61WCN
+  E.g. If you downloaded this file to yout home directory run
+  export BIODAQDIR=~/DAQNavi_Linux/SDK_Drivers/linux_driver_source_3.2.8.0_64bit
 - By default the FogLAMP develop package header files and libraries
   are expected to be located in /usr/include/foglamp and /usr/lib/foglamp
 - If **FOGLAMP_ROOT** env var is set and no -D options are set,
@@ -80,17 +86,15 @@ This repo contains the scripts used to create a foglamp-south-usb4704 Debian pac
 The make_deb script
 ===================
 
-Run the make_deb command after compiling the plugin:
+Run the make_deb command:
 
 .. code-block:: console
 
   $ ./make_deb help
-  make_deb {x86|arm} [help|clean|cleanall]
+  make_deb [help|clean|cleanall]
   This script is used to create the Debian package of FoglAMP C++ 'usb4704' south plugin
   Arguments:
    help     - Display this help text
-   x86      - Build an x86_64 package
-   arm      - Build an armv7l package
    clean    - Remove all the old versions saved in format .XXXX
    cleanall - Remove all the versions, including the last one
   $
