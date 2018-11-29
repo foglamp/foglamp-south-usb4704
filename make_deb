@@ -63,16 +63,12 @@ do
 done
 
 # If the architecture has not been defined, then the script is complete
-if [ "$(dpkg --print-architecture)" == "armhf" ]; then
-  echo "Building on arm architecture..."
-  architecture="armhf"
-elif [ "$(dpkg --print-architecture)" == "amd64" ]; then
-  echo "Building on amd64 architecture..."
-  architecture="x86_64"
-else
-  echo "The host architecture is not supported for this plugin!!"
-  exit 1
+if [ "$(dpkg --print-architecture)" != "amd64" ]; then
+  echo "Package building is only supported on amd64 architecture!!"
+  exit 0
 fi
+
+architecture="x86_64"
 
 # Get plugin version from plugin.cpp, grep comment: // Version
 plugin_version=`cat ${GIT_ROOT}/plugin.cpp | grep 'Version' | head -1 | tr -d ' ' | awk -F',' '{print $1}' | sed -e 's/\"//g' | sed -e 's/[[:space:]]\+//g'`
