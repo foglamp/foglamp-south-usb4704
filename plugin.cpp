@@ -34,24 +34,26 @@ using namespace rapidjson;
  * Default configuration
  */
 #define CONFIG	"{\"plugin\" : { \"description\" : \"Advantech USB-4704 Data Acquisition Module\", " \
-			"\"type\" : \"string\", \"default\" : \"usb4704\" }, " \
+			"\"type\" : \"string\", \"default\" : \"usb4704\", \"readonly\": \"true\" }, " \
 		"\"asset\" : { \"description\" : \"Asset name to use for readings\", " \
-			"\"type\" : \"string\", \"default\" : \"usb4704\" }, " \
+			"\"type\" : \"string\", \"default\" : \"usb4704\", " \
+			 "\"order\": \"1\", \"displayName\": \"Asset Name\" }, " \
 		"\"connections\" : { \"description\" : \"Utilisation of connections on USB-4704\", " \
-			"\"type\" : \"JSON\", \"default\" : { " \
-				"\"analogue_example\" : { " \
-					"\"type\" : \"analogue\", " \
-					"\"pin\" : \"AI0\", " \
-					"\"name\" : \"value1\", " \
-					"\"scale\" : 0.1 " \
+		    "\"order\": \"2\", \"displayName\": \"Connections\", " \
+			"\"type\" : \"JSON\", \"default\" : \"{ " \
+				"\\\"analogue_example\\\" : { " \
+					"\\\"type\\\" : \\\"analogue\\\", " \
+					"\\\"pin\\\" : \\\"AI0\\\", " \
+					"\\\"name\\\" : \\\"value1\\\", " \
+					"\\\"scale\\\" : 0.1 " \
 				"}, " \
-				"\"digital_example\" : { " \
-					"\"type\" : \"example\", " \
-					"\"pins\" : [\"DI0\", \"DI1\", \"DI2\", \"DI3\"], " \
-					"\"name\" : \"value1\", " \
-					"\"scale\" : 0.1 " \
+				"\\\"digital_example\\\" : { " \
+					"\\\"type\\\" : \\\"example\\\", " \
+					"\\\"pins\\\" : [\\\"DI0\\\", \\\"DI1\\\", \\\"DI2\\\", \\\"DI3\\\"], " \
+					"\\\"name\\\" : \\\"value1\\\", " \
+					"\\\"scale\\\" : 0.1 " \
 				"} " \
-			"} } }"
+			"}\" } }"
 
 /**
  * The USB-4704 plugin interface
