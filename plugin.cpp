@@ -177,7 +177,7 @@ USB4704 *usb = (USB4704 *)handle;
 void plugin_reconfigure(PLUGIN_HANDLE *handle, string& newConfig)
 {
 ConfigCategory	config("update", newConfig);
-USB4704		*usb = (USB4704 *)handle;
+USB4704		*usb = (USB4704 *)*handle;
 
 	if (config.itemExists("asset"))
 	{
