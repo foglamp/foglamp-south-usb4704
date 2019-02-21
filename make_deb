@@ -119,10 +119,16 @@ else
   exit 1
 fi
 
+thisDir=`pwd`
+
 #
 # Building Advantech usb4704
-#cd /tmp; wget http://advdownload.advantech.com/productfile/Downloadfile1/1-1N61WCN/linux_driver_source_4.0.0.0_64bit.run.zip; unzip linux_driver_source_4.0.0.0_64bit.run.zip;
-#sudo chmod +x linux_driver_source_4.0.0.0_64bit.run; sudo ./linux_driver_source_4.0.0.0_64bit.run silent install usb4702_usb4704; export BIODAQDIR=/opt/advantech/
+rm -rf /tmp/advantech
+mkdir -p /tmp/advantech
+cd /tmp/advantech; wget http://advdownload.advantech.com/productfile/Downloadfile1/1-1N61WCN/linux_driver_source_4.0.0.0_64bit.run.zip; unzip linux_driver_source_4.0.0.0_64bit.run.zip;
+sudo chmod +x linux_driver_source_4.0.0.0_64bit.run; sudo ./linux_driver_source_4.0.0.0_64bit.run silent install usb4702_usb4704; export BIODAQDIR=/opt/advantech/
+
+cd "${thisDir}"
 
 # Build plugin
 if [[ ! -d "${BIODAQDIR}" ]]; then
@@ -157,6 +163,11 @@ mkdir -p usr/local/foglamp
 cd usr/local/foglamp
 mkdir -p "plugins/${plugin_type}/${plugin_install_dirname}"
 cp -R --preserve=links ${GIT_ROOT}/build/lib*.so* "plugins/${plugin_type}/${plugin_install_dirname}"
+
+cd "${BUILD_ROOT}"
+cd "${package_name}"
+mkdir -p usr/lib
+cp -R --preserve=links /usr/lib/libbiodaq* usr/lib
 echo "Done."
 
 # Build the package
