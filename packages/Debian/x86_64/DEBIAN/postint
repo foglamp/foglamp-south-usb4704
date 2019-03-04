@@ -32,3 +32,4 @@ set_files_ownership () {
 }
 
 set_files_ownership
+echo "usb4704 plugin is installed"
