@@ -18,7 +18,7 @@ using namespace std;
 using namespace Automation::BDaq;
 
 /**
- * Constructor fo rthe USB-4704 generic capture device plugin
+ * Constructor for the USB-4704 generic capture device plugin
  */
 USB4704::USB4704() : m_asset("usb4704"), m_instantAiCtrl(0)
 {
