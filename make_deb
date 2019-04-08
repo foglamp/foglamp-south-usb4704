@@ -16,7 +16,7 @@
 ## limitations under the License.
 ##--------------------------------------------------------------------
 ##
-## Author: Massimiliano Pinto
+## Author: Massimiliano Pinto, Ashish Jabble
 ##
 
 set -e
@@ -70,8 +70,8 @@ fi
 
 architecture="x86_64"
 
-# Get plugin version from plugin.cpp, grep comment: // Version
-plugin_version=`cat ${GIT_ROOT}/plugin.cpp | grep 'Version' | head -1 | tr -d ' ' | awk -F',' '{print $1}' | sed -e 's/\"//g' | sed -e 's/[[:space:]]\+//g'`
+# Get plugin version from VERSION
+plugin_version=`cat ${GIT_ROOT}/VERSION`
 # Get FogLAMP version dependency from foglamp_version file
 foglamp_version=`cat ${GIT_ROOT}/foglamp.version | tr -d ' ' | grep 'foglamp_version' | head -1 | sed -e 's/\(.*\)version\(.*\)/\2/g'`
 BUILD_ROOT="${GIT_ROOT}/packages/build"
@@ -111,18 +111,15 @@ libdir=${FOGLAMP_ROOT}/lib; [ -d ${libdir} ] && LD_LIBRARY_PATH=$(echo $LD_LIBRA
 libdir=${FOGLAMP_ROOT}/cmake_build/C/lib; [ -d ${libdir} ] && LD_LIBRARY_PATH=$(echo $LD_LIBRARY_PATH | sed "s|${libdir}||g") && export LD_LIBRARY_PATH=${libdir}:${LD_LIBRARY_PATH} && libPathSet=1
 [ "$libPathSet" -eq "0" ] && echo "Unable to set/update LD_LIBRARY_PATH to include path of Foglamp shared libraries: check whether ${FOGLAMP_ROOT}/lib or ${FOGLAMP_ROOT}/cmake_build/C/lib exists" && exit 1
 
-if [ "$(dpkg -s libmodbus-dev | grep Status)" == "Status: install ok installed" ]; then 
-  echo "libmodbus-dev library is installed"
-else 
-  echo "libmodbus-dev library is not present on the machine, please install before building the package"
-  echo "sudo apt-get install libmodbus-dev" 
-  exit 1
-fi
+thisDir=`pwd`
 
-#
+
 # Building Advantech usb4704
-#cd /tmp; wget http://advdownload.advantech.com/productfile/Downloadfile1/1-1N61WCN/linux_driver_source_4.0.0.0_64bit.run.zip; unzip linux_driver_source_4.0.0.0_64bit.run.zip;
-#sudo chmod +x linux_driver_source_4.0.0.0_64bit.run; sudo ./linux_driver_source_4.0.0.0_64bit.run silent install usb4702_usb4704; export BIODAQDIR=/opt/advantech/
+DIR=/tmp/advantech
+./requirements.sh ${DIR}
+export BIODAQDIR=${DIR}
+
+cd "${thisDir}"
 
 # Build plugin
 if [[ ! -d "${BIODAQDIR}" ]]; then
@@ -148,7 +145,6 @@ mkdir "${package_name}"
 # First with files common to all pla
 echo -n "Populating the package and updating version file..."
 cd "${package_name}"
-cp -R ${GIT_ROOT}/packages/Debian/common/* .
 cp -R ${GIT_ROOT}/packages/Debian/${architecture}/* .
 sed -i "s/Version: 1.0.0/Version: ${plugin_version}/g" DEBIAN/control
 sed -i "s/Depends: foglamp/Depends: foglamp (${foglamp_version})/g" DEBIAN/control
@@ -157,6 +153,11 @@ mkdir -p usr/local/foglamp
 cd usr/local/foglamp
 mkdir -p "plugins/${plugin_type}/${plugin_install_dirname}"
 cp -R --preserve=links ${GIT_ROOT}/build/lib*.so* "plugins/${plugin_type}/${plugin_install_dirname}"
+
+cd "${BUILD_ROOT}"
+cd "${package_name}"
+mkdir -p usr/lib
+cp -R --preserve=links /usr/lib/libbiodaq* usr/lib
 echo "Done."
 
 # Build the package

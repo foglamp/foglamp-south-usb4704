@@ -26,6 +26,7 @@
 #include <plugin_exception.h>
 #include <config_category.h>
 #include <rapidjson/document.h>
+#include <version.h>
 
 using namespace std;
 using namespace rapidjson;
@@ -34,24 +35,26 @@ using namespace rapidjson;
  * Default configuration
  */
 #define CONFIG	"{\"plugin\" : { \"description\" : \"Advantech USB-4704 Data Acquisition Module\", " \
-			"\"type\" : \"string\", \"default\" : \"usb4704\" }, " \
+			"\"type\" : \"string\", \"default\" : \"usb4704\", \"readonly\": \"true\" }, " \
 		"\"asset\" : { \"description\" : \"Asset name to use for readings\", " \
-			"\"type\" : \"string\", \"default\" : \"usb4704\" }, " \
+			"\"type\" : \"string\", \"default\" : \"usb4704\", " \
+			 "\"order\": \"1\", \"displayName\": \"Asset Name\" }, " \
 		"\"connections\" : { \"description\" : \"Utilisation of connections on USB-4704\", " \
-			"\"type\" : \"JSON\", \"default\" : { " \
-				"\"analogue_example\" : { " \
-					"\"type\" : \"analogue\", " \
-					"\"pin\" : \"AI0\", " \
-					"\"name\" : \"value1\", " \
-					"\"scale\" : 0.1 " \
+		    "\"order\": \"2\", \"displayName\": \"Connections\", " \
+			"\"type\" : \"JSON\", \"default\" : \"{ " \
+				"\\\"analogue_example\\\" : { " \
+					"\\\"type\\\" : \\\"analogue\\\", " \
+					"\\\"pin\\\" : \\\"AI0\\\", " \
+					"\\\"name\\\" : \\\"value1\\\", " \
+					"\\\"scale\\\" : 0.1 " \
 				"}, " \
-				"\"digital_example\" : { " \
-					"\"type\" : \"example\", " \
-					"\"pins\" : [\"DI0\", \"DI1\", \"DI2\", \"DI3\"], " \
-					"\"name\" : \"value1\", " \
-					"\"scale\" : 0.1 " \
+				"\\\"digital_example\\\" : { " \
+					"\\\"type\\\" : \\\"example\\\", " \
+					"\\\"pins\\\" : [\\\"DI0\\\", \\\"DI1\\\", \\\"DI2\\\", \\\"DI3\\\"], " \
+					"\\\"name\\\" : \\\"value1\\\", " \
+					"\\\"scale\\\" : 0.1 " \
 				"} " \
-			"} } }"
+			"}\" } }"
 
 /**
  * The USB-4704 plugin interface
@@ -63,7 +66,7 @@ extern "C" {
  */
 static PLUGIN_INFORMATION info = {
 	"usb4704",                // Name
-	"1.0.0",                  // Version
+	VERSION,                  // Version
 	0,    			  // Flags
 	PLUGIN_TYPE_SOUTH,        // Type
 	"1.0.0",                  // Interface version
@@ -175,7 +178,7 @@ USB4704 *usb = (USB4704 *)handle;
 void plugin_reconfigure(PLUGIN_HANDLE *handle, string& newConfig)
 {
 ConfigCategory	config("update", newConfig);
-USB4704		*usb = (USB4704 *)handle;
+USB4704		*usb = (USB4704 *)*handle;
 
 	if (config.itemExists("asset"))
 	{
