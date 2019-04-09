@@ -10,8 +10,7 @@ in whch you installed this.
 
 Build
 -----
-
-To build usb4704 plugin run the commands:
+To build usb4704 plugin with given `requirements.sh <requirements.sh>`_ or the following commands:
 
 .. code-block:: console
 
