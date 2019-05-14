@@ -35,7 +35,13 @@ set(NEEDED_FOGLAMP_LIBS common-lib)
 file(GLOB SOURCES *.cpp)
 
 # Find first biodaq library
-set(BIODAQDIR $ENV{BIODAQDIR})
+if (NOT "$ENV{BIODAQDIR}" STREQUAL "")
+	set(BIODAQDIR $ENV{BIODAQDIR})
+else()
+	if (EXISTS "$ENV{HOME}/advantech")
+		set(BIODAQDIR "$ENV{HOME}/advantech")
+	endif()
+endif()
 find_library(BIODAQLIB biodaq ${BIODAQDIR}/libs)
 if (NOT BIODAQLIB)
 	message(FATAL_ERROR "Advantech BIODAQ library non found.\n"
