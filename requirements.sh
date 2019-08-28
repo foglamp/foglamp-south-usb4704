@@ -34,6 +34,7 @@ mkdir -p ${DIR}
 cd ${DIR}
 echo Downloading Advantech library...
 wget http://advdownload.advantech.com/productfile/Downloadfile1/1-1N61WCN/linux_driver_source_4.0.0.0_64bit.run.zip
+sudo apt install -y unzip
 echo Unzipping driver source...
 unzip linux_driver_source_4.0.0.0_64bit.run.zip
 sudo chmod +x linux_driver_source_4.0.0.0_64bit.run
