@@ -1,7 +1,7 @@
 #ifndef _USB4704_H
 #define _USB4704_H
 /*
- * FogLAMP south service plugin
+ * Fledge south service plugin
  *
  * Copyright (c) 2018 Dianomic Systems
  *

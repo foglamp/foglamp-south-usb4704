@@ -1,5 +1,5 @@
 /*
- * FogLAMP south plugin.
+ * Fledge south plugin.
  *
  * This plugin is for the Advantech USB-4704 Portable Data Acquisition Module.
  * It supports a number of digitial and analogue inputs on that device. The mapping
