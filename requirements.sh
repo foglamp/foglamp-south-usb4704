@@ -38,6 +38,6 @@ echo Unzipping driver source...
 unzip linux_driver_source_4.0.0.0_64bit.run.zip
 sudo chmod +x linux_driver_source_4.0.0.0_64bit.run
 echo Installing driver source...
-sudo ./linux_driver_source_4.0.0.0_64bit.run silent install -y usb4702_usb4704
-echo Set the environment variable BIODAQDIR to ${DIR}
-echo export BIODAQDIR=${DIR}
+sudo ./linux_driver_source_4.0.0.0_64bit.run silent install usb4702_usb4704
+echo Set the environment variable BIODAQDIR to /opt/advantech
+echo export BIODAQDIR=/opt/advantech
