@@ -31,30 +31,45 @@
 using namespace std;
 using namespace rapidjson;
 
+#define DEFAULT_CONNECTIONS QUOTE({				\
+	"analogue_example" : {					\
+		"type" : "analogue",				\
+		"pin" : "AI0",					\
+		"name" : "value1",				\
+		"scale" : 0.1					\
+	},							\
+	"digital_example" : {					\
+		"type" : "digital",				\
+		"pins" : ["DI0", "DI1", "DI2", "DI3"],		\
+		"name" : "value1",				\
+		"scale" : 0.1					\
+		} 						\
+	})
 /**
  * Default configuration
  */
-#define CONFIG	"{\"plugin\" : { \"description\" : \"Advantech USB-4704 Data Acquisition Module\", " \
-			"\"type\" : \"string\", \"default\" : \"usb4704\", \"readonly\": \"true\" }, " \
-		"\"asset\" : { \"description\" : \"Asset name to use for readings\", " \
-			"\"type\" : \"string\", \"default\" : \"usb4704\", " \
-			 "\"order\": \"1\", \"displayName\": \"Asset Name\" }, " \
-		"\"connections\" : { \"description\" : \"Utilisation of connections on USB-4704\", " \
-		    "\"order\": \"2\", \"displayName\": \"Connections\", " \
-			"\"type\" : \"JSON\", \"default\" : \"{ " \
-				"\\\"analogue_example\\\" : { " \
-					"\\\"type\\\" : \\\"analogue\\\", " \
-					"\\\"pin\\\" : \\\"AI0\\\", " \
-					"\\\"name\\\" : \\\"value1\\\", " \
-					"\\\"scale\\\" : 0.1 " \
-				"}, " \
-				"\\\"digital_example\\\" : { " \
-					"\\\"type\\\" : \\\"example\\\", " \
-					"\\\"pins\\\" : [\\\"DI0\\\", \\\"DI1\\\", \\\"DI2\\\", \\\"DI3\\\"], " \
-					"\\\"name\\\" : \\\"value1\\\", " \
-					"\\\"scale\\\" : 0.1 " \
-				"} " \
-			"}\" } }"
+static const char *default_config = QUOTE({
+		"plugin" : {
+			"description" : "Advantech USB-4704 Data Acquisition Module",
+			"type" : "string",
+		       	"default" : "usb4704",
+			"readonly": "true"
+			},
+		"asset" : {
+			"description" : "Asset name to use for readings",
+			"type" : "string",
+		       	"default" : "usb4704",
+			 "order": "1",
+			 "displayName": "Asset Name"
+			 },
+		"connections" : {
+			"description" : "Utilisation of connections on USB-4704",
+		    	"order": "2",
+			"displayName": "Connections",
+			"type" : "JSON",
+		       	"default" : DEFAULT_CONNECTIONS
+			}
+});
 
 /**
  * The USB-4704 plugin interface
@@ -70,7 +85,7 @@ static PLUGIN_INFORMATION info = {
 	0,    			  // Flags
 	PLUGIN_TYPE_SOUTH,        // Type
 	"1.0.0",                  // Interface version
-	CONFIG			  // Default configuration
+	default_config		  // Default configuration
 };
 
 /**
@@ -102,6 +117,7 @@ USB4704 *usb = 0;
 
 	// Now process the Connections
 	string connections = config->getValue("connections");
+	Logger::getLogger()->warn("configuration is %s", connections.c_str());
 	rapidjson::Document doc;
 	doc.Parse(connections.c_str());
 	if (!doc.HasParseError())
@@ -124,7 +140,7 @@ USB4704 *usb = 0;
 				}
 				else
 				{
-					Logger::getLogger()->error("Analogue connection for USB-4704 is missing definition of pin");
+					Logger::getLogger()->fatal("Analogue connection for USB-4704 is missing definition of pin");
 					throw exception();
 				}
 			}
@@ -133,16 +149,21 @@ USB4704 *usb = 0;
 				if (itr->value.HasMember("pins") && itr->value["pins"].IsArray())
 				{
 					vector<string> pins;
-					for (Value::ConstValueIterator pitr = itr->value.Begin();
-								pitr != itr->value.End(); ++pitr)
+					for (Value::ConstValueIterator pitr = itr->value["pins"].Begin();
+							pitr != itr->value["pins"].End(); ++pitr)
 					{
 						pins.push_back(string(pitr->GetString()));
 					}
 					usb->addDigitalConnection(itr->name.GetString(), pins);
 				}
+				else
+				{
+					Logger::getLogger()->fatal("Digital connection for USB-4704 is missing definition of pins, or pins is not an array");
+				}
 			}
 			else
 			{
+				Logger::getLogger()->fatal("Configuration type must have either an analogue or digitial. Type %s is not supported", type);
 				throw exception();
 			}
 		}

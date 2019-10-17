@@ -33,11 +33,11 @@ rm -rf ${DIR}
 mkdir -p ${DIR}
 cd ${DIR}
 echo Downloading Advantech library...
-wget http://advdownload.advantech.com/productfile/Downloadfile1/1-1N61WCN/linux_driver_source_4.0.0.0_64bit.run.zip
+wget http://downloadt.advantech.com/download/downloadsr.aspx?File_Id=1-1QIDR9T -O linux_driver_source_4.0.1.0_64bit.run.zip
 echo Unzipping driver source...
-unzip linux_driver_source_4.0.0.0_64bit.run.zip
-sudo chmod +x linux_driver_source_4.0.0.0_64bit.run
+unzip linux_driver_source_4.0.1.0_64bit.run.zip
+sudo chmod +x linux_driver_source_4.0.1.0_64bit.run
 echo Installing driver source...
-sudo ./linux_driver_source_4.0.0.0_64bit.run silent install usb4702_usb4704
+sudo ./linux_driver_source_4.0.1.0_64bit.run silent install usb4702_usb4704
 echo Set the environment variable BIODAQDIR to /opt/advantech
 echo export BIODAQDIR=/opt/advantech
