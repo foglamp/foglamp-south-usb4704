@@ -33,7 +33,9 @@ rm -rf ${DIR}
 mkdir -p ${DIR}
 cd ${DIR}
 echo Downloading Advantech library...
+
 wget http://downloadt.advantech.com/download/downloadsr.aspx?File_Id=1-1QIDR9T -O linux_driver_source_4.0.1.0_64bit.run.zip
+sudo apt install -y unzip
 echo Unzipping driver source...
 unzip linux_driver_source_4.0.1.0_64bit.run.zip
 sudo chmod +x linux_driver_source_4.0.1.0_64bit.run
