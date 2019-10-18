@@ -117,7 +117,6 @@ USB4704 *usb = 0;
 
 	// Now process the Connections
 	string connections = config->getValue("connections");
-	Logger::getLogger()->warn("configuration is %s", connections.c_str());
 	rapidjson::Document doc;
 	doc.Parse(connections.c_str());
 	if (!doc.HasParseError())
