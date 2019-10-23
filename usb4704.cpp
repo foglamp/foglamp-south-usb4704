@@ -25,7 +25,7 @@ USB4704::USB4704() : m_asset("usb4704"), m_instantAiCtrl(0)
 }
 
 /**
- * Destructor fo rthe USB-4704 generic capture device plugin
+ * Destructor for the USB-4704 generic capture device plugin
  */
 USB4704::~USB4704()
 {
@@ -67,7 +67,9 @@ void USB4704::addAnalogueConnection(const string& name, const string& pin, doubl
 		ErrorCode ret = m_instantAiCtrl->setSelectedDevice(devInfo);
 		if (BioFailed(ret))
 		{
-			Logger::getLogger()->error("Failed to initialise USB-4704, error code %x", ret);
+			wchar_t buf[132];
+			AdxEnumToString(L"ErrorCode", ret, sizeof(buf), buf);
+			Logger::getLogger()->error("Failed to initialise USB-4704, error %x: '%ls", ret, buf);
 			throw USB4704InitialisationFailed();
 		}
 		m_analogueChannelMax = m_instantAiCtrl->getFeatures()->getChannelCountMax();
@@ -92,7 +94,9 @@ void USB4704::addDigitalConnection(const string& name, const vector<string>& pin
 		ErrorCode ret = m_instantDiCtrl->setSelectedDevice(devInfo);
 		if (BioFailed(ret))
 		{
-			Logger::getLogger()->error("Failed to initialise USB-4704, error code %x", ret);
+			wchar_t buf[132];
+			AdxEnumToString(L"ErrorCode", ret, sizeof(buf), buf);
+			Logger::getLogger()->error("Failed to initialise USB-4704, error code %x: %ls", ret, buf);
 			throw USB4704InitialisationFailed();
 		}
 	}
